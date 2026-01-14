@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile | Task Manager</title>
+    <style>
+        body {
+            background-color: #121212;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #eeeeee;
+        }
+        .profile-container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 400px;
+            text-align: center;
+        }
+        h2 {
+            background-color: #447e9b; /* Django Admin Blue */
+            color: white;
+            margin: -30px -30px 20px -30px;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 4px 4px 0 0;
+        }
+        .user-info {
+            margin: 20px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        .username {
+            font-size: 24px;
+            font-weight: bold;
+            color: #447e9b;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background-color: #262626;
+            padding: 15px;
+            border-radius: 4px;
+            border-top: 3px solid #447e9b;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+        .logout-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #d9534f; /* Secure logout red */
+            color: white;
+            text-decoration: none;
+            border-radius: 2px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #c9302c;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h2>User Profile</h2>
+        
+        <div class="user-info">
+            <span class="stat-label">Logged in as:</span><br>
+            <span class="username">{{ user.username }}</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-value">{{ task_count }}</span>
+                <span class="stat-label">Total Tasks</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">{{ completed_tasks }}</span>
+                <span class="stat-label">Completed</span>
+            </div>
+        </div>
+
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+
+        <a href="{% url 'task_list' %}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

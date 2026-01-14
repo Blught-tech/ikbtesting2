@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Secure Access</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1a1a1a; color: #ffffff; }
+        .card { background-color: #212121; border: 1px solid #333; }
+        .btn-primary { background-color: #4a86a8; border: none; }
+        .btn-primary:hover { background-color: #3d6e8a; }
+        .text-warning { color: #ffc107 !important; }
+
+.alert-success {
+    background-color: #1e4620 !important; /* Dark green */
+    border: 1px solid #2e7d32 !important;
+    color: #a5d6a7 !important; /* Light green text */
+}
+
+/* Fixes the 'Don't have an account?' text visibility */
+.text-muted, .text-secondary, .mt-3 small {
+    color: #aaaaaa !important; /* Light gray to stand out on dark background */
+}
+
+/* Styles the Sign Up link to match your Log In button's blue */
+.btn-link, a.text-info {
+    color: #4a86a8 !important; /* Matches the header color in image_c93ee6.png */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-link:hover, a.text-info:hover {
+    color: #3d6e8a !important;
+    text-decoration: underline;
+}
+
+/* Fixes the vertical stretching of the help text lists */
+.form-text ul {
+    padding-left: 1rem;
+    margin-top: 5px;
+    color: #888;
+}
+
+.form-text li {
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+    /* 1. Fixes the vertical stretching of the password requirement list */
+    ul, li {
+        margin-bottom: 2px;
+        line-height: 1.2;
+        font-size: 0.85rem;
+        color: #aaa; /* Makes the requirements less distracting */
+    }
+
+    /* 2. Centers the form on the screen and limits its width */
+    .form-signin {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 80vh; /* Keeps it centered vertically */
+    }
+
+    /* 3. Adds spacing to the "Create Account" card */
+    h2 {
+        margin-bottom: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+    }
+        input, select, textarea {
+        background-color: #333 !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+    }
+
+    input:focus {
+        background-color: #444 !important;
+        outline: none;
+        border-color: #4a86a8 !important;
+    }
+
+    .text-secondary { color: #aaa !important; }
+    </style>
+</head>
+<body class="d-flex align-items-center py-4 bg-dark flex-column"> {% if messages %}
+        <div class="container mb-3" style="max-width: 500px;">
+            {% for message in messages %}
+                <div class="alert alert-success border-0 shadow-sm text-center" style="background-color: #1e4620; color: #a5d6a7;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="form-signin w-100 m-auto" style="max-width: 400px;">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

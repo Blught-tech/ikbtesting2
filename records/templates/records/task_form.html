@@ -1,0 +1,18 @@
+<style>
+    body { background-color: #121212; color: #eeeeee; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .form-container { background-color: #1e1e1e; padding: 30px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 400px; }
+    h2 { background-color: #447e9b; color: white; margin: -30px -30px 20px -30px; padding: 15px; text-align: center; border-radius: 4px 4px 0 0; }
+    input[type="text"], textarea { width: 100%; padding: 10px; margin: 10px 0; background: #2c2c2c; border: 1px solid #333; color: white; border-radius: 2px; }
+    button { width: 100%; padding: 10px; background-color: #447e9b; color: white; border: none; cursor: pointer; font-weight: bold; }
+    .back-link { display: block; text-align: center; margin-top: 15px; color: #447e9b; text-decoration: none; font-size: 14px; }
+</style>
+
+<div class="form-container">
+    <h2>Add New Task</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Task</button>
+    </form>
+    <a href="{% url 'task_list' %}" class="back-link">← Back to Dashboard</a>
+</div>
