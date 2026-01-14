@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Detail | Task Manager</title>
+    <style>
+        body {
+            background-color: #121212;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #eeeeee;
+            display: flex;
+            justify-content: center;
+        }
+        .dashboard-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1e1e1e;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        h1 {
+            background-color: #447e9b;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            font-size: 22px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+        }
+        .task-meta {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        .description-box {
+            background-color: #262626;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .status-badge {
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .status-done {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .back-link {
+            display: inline-block;
+            color: #447e9b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            color: #5fb1d9;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>{{ task.title }}</h1>
+        
+        <div class="content">
+            <div class="task-meta">
+                Created: {{ task.created_at|date:"M d, Y" }}
+                {% if task.is_completed %}
+                    <span class="status-badge status-done">✅ Completed</span>
+                {% else %}
+                    <span class="status-badge status-pending">⏳ Pending</span>
+                {% endif %}
+            </div>
+
+            <h3>Description</h3>
+            <div class="description-box">
+                {% if task.description %}
+                    {{ task.description|linebreaks }}
+                {% else %}
+                    <em style="color: #666;">No description provided.</em>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'task_list' %}" class="back-link">← Back to Task List</a>
+        </div>
+    </div>
+</body>
+</html>

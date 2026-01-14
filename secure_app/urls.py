@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views # Import auth views
 from records import views as records_views
 from django.conf import settings
-from django.views.static import serve
+from django.contrib.staticfiles.views import serve as staticfiles_serve
 from django.urls import re_path 
 
 urlpatterns = [
@@ -36,5 +36,5 @@ urlpatterns = [
 
 if not settings.DEBUG:
     urlpatterns += [
-        re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+         re_path(r'^static/(?P<path>.*)$', staticfiles_serve, {'insecure': True}),
     ]

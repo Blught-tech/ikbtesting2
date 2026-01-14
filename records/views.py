@@ -31,6 +31,12 @@ def task_list(request):
     # 2. Return the task list template
     return render(request, 'records/task_list.html', {'tasks': tasks})
 
+
+@login_required
+def task_detail(request, task_id):
+    task = get_object_or_404(Task, id=task_id, owner=request.user)
+    return render(request, 'records/task_detail.html', {'task': task})
+
 @login_required
 def toggle_task(request, task_id):
     # Security: get_object_or_404 ensures the task exists AND belongs to the user
