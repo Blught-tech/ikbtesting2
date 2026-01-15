@@ -61,6 +61,37 @@
             background-color: #ffc107;
             color: #333;
         }
+        .attachment-section {
+            margin-bottom: 30px;
+        }
+        .attachment-card {
+            background-color: #262626;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .attachment-preview {
+            margin-top: 15px;
+        }
+        .attachment-preview img,
+        .attachment-preview iframe {
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+        }
+        .attachment-preview iframe {
+            height: 480px;
+        }
+        .attachment-actions {
+            margin-top: 10px;
+        }
+        .attachment-actions a {
+            color: #5fb1d9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .attachment-actions a:hover {
+            text-decoration: underline;
+        }
         .back-link {
             display: inline-block;
             color: #447e9b;
@@ -94,6 +125,30 @@
                 {% else %}
                     <em style="color: #666;">No description provided.</em>
                 {% endif %}
+            </div>
+
+            <div class="attachment-section">
+                <h3>Attachment</h3>
+                <div class="attachment-card">
+                    {% if task.attachment %}
+                        <div class="attachment-actions">
+                            <a href="{{ task.attachment.url }}" target="_blank" rel="noopener noreferrer">View</a>
+                            ·
+                            <a href="{{ task.attachment.url }}" download>Download</a>
+                        </div>
+                        <div class="attachment-preview">
+                            {% if task.attachment_is_image %}
+                                <img src="{{ task.attachment.url }}" alt="Attachment for {{ task.title }}">
+                            {% elif task.attachment_is_pdf %}
+                                <iframe src="{{ task.attachment.url }}" title="PDF attachment"></iframe>
+                            {% else %}
+                                <p style="color: #888;">Preview not available for this file type.</p>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <em style="color: #666;">No attachment uploaded.</em>
+                    {% endif %}
+                </div>
             </div>
 
             <a href="{% url 'task_list' %}" class="back-link">← Back to Task List</a>

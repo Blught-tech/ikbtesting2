@@ -62,7 +62,7 @@ def toggle_task(request, task_id):
 @login_required
 def create_task(request):
     if request.method == "POST":
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, request.FILES)
         if form.is_valid():
             task = form.save(commit=False)
             task.owner = request.user
