@@ -19,6 +19,9 @@ pip install -r requirements.txt
 5. Initialize the Database:
 python manage.py migrate
 
+If you pull new changes (like adding task attachments), apply the latest migrations:
+python manage.py migrate
+
 6. Create an Admin User (For Audit Log access):
 python manage.py createsuperuser
 
@@ -26,6 +29,8 @@ python manage.py createsuperuser
 
 1. Start the Development Server:
 python manage.py runserver
+
+Uploaded task attachments are saved under the `uploads/` folder (outside the web root) and served at `/media/`.
 
 2. Access the Application:
 HomePage: http://127.0.0.1:8000/

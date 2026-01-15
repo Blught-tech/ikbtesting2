@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django import forms
 from .models import Task
 
@@ -16,8 +18,18 @@ class TaskForm(forms.ModelForm):
             return attachment
 
         allowed_extensions = {'.png', '.jpg', '.jpeg', '.gif', '.webp', '.pdf'}
-        extension = attachment.name.lower()
-        if not any(extension.endswith(ext) for ext in allowed_extensions):
+        allowed_mime_types = {
+            'image/png',
+            'image/jpeg',
+            'image/gif',
+            'image/webp',
+            'application/pdf',
+        }
+        extension = Path(attachment.name).suffix.lower()
+        content_type = getattr(attachment, 'content_type', '').lower()
+        if extension not in allowed_extensions:
+            raise forms.ValidationError("Only image or PDF files are allowed.")
+        if content_type not in allowed_mime_types:
             raise forms.ValidationError("Only image or PDF files are allowed.")
         max_size = 5 * 1024 * 1024
         if attachment.size > max_size:

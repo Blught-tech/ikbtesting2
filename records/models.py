@@ -1,9 +1,15 @@
 from pathlib import Path
+import uuid
 
 from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+
+def task_attachment_upload_path(instance, filename):
+    extension = Path(filename).suffix.lower()
+    return f"task_uploads/{uuid.uuid4()}{extension}"
+
 
 class Task(models.Model):
     # Links each task to a specific user
@@ -12,7 +18,7 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    attachment = models.FileField(upload_to='task_uploads/', blank=True, null=True)
+    attachment = models.FileField(upload_to=task_attachment_upload_path, blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} ({self.owner.username})"
