@@ -129,7 +129,7 @@ X_FRAME_OPTIONS = 'DENY'
 LOGIN_URL = 'login' 
 
 # Where to send users after a successful login
-LOGIN_REDIRECT_URL = '/records/tasks/'
+LOGIN_REDIRECT_URL = 'task_list'
 
 # Where to send users after logging out
 LOGOUT_REDIRECT_URL = 'login'
