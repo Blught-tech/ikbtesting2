@@ -20,6 +20,7 @@ from django.contrib.auth import views as auth_views # Import auth views
 from records import views as records_views
 from django.conf import settings
 from django.contrib.staticfiles.views import serve as staticfiles_serve
+from django.views.static import serve as media_serve
 from django.urls import re_path 
 
 urlpatterns = [
@@ -37,4 +38,5 @@ urlpatterns = [
 if not settings.DEBUG:
     urlpatterns += [
          re_path(r'^static/(?P<path>.*)$', staticfiles_serve, {'insecure': True}),
+         re_path(r'^media/(?P<path>.*)$', media_serve, {'document_root': settings.MEDIA_ROOT}),
     ]
