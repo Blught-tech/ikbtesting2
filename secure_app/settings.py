@@ -16,7 +16,9 @@ from dotenv import load_dotenv
 
 load_dotenv() #Load variables from .env
 
-SECRET_KEY = 'django-insecure-test-key-123'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY is not set")
 DEBUG = False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
