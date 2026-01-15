@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task
+from .models import Task, UserMFA
 from django.contrib.admin.models import LogEntry
 
 # Register your models here.
@@ -10,6 +10,12 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'is_completed', 'created_at')
     # This adds a filter on the right side for better management
     list_filter = ('is_completed', 'owner')
+
+
+@admin.register(UserMFA)
+class UserMFAAdmin(admin.ModelAdmin):
+    list_display = ('user', 'is_enabled', 'enabled_at')
+    list_filter = ('is_enabled',)
 
 @admin.register(LogEntry)
 class LogEntryAdmin(admin.ModelAdmin):

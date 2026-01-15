@@ -1,0 +1,16 @@
+{% extends "records/base.html" %}
+
+{% block content %}
+<div class="card p-4 shadow-sm">
+    <h2 class="mb-3">Disable Multi-Factor Authentication</h2>
+    <p class="text-secondary">Confirm the 6-digit code to disable MFA.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Disable MFA</button>
+    </form>
+    <div class="mt-3 text-center">
+        <a href="{% url 'user_profile' %}" class="btn btn-link">Back to profile</a>
+    </div>
+</div>
+{% endblock %}

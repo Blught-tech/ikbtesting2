@@ -35,3 +35,14 @@ class Task(models.Model):
         if not self.attachment:
             return False
         return Path(self.attachment.name).suffix.lower() == '.pdf'
+
+
+class UserMFA(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mfa_profile')
+    secret = models.CharField(max_length=32)
+    is_enabled = models.BooleanField(default=False)
+    enabled_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        status = "enabled" if self.is_enabled else "disabled"
+        return f"MFA for {self.user.username} ({status})"

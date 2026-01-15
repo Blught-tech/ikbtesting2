@@ -104,6 +104,18 @@
             </div>
         </div>
 
+        <div class="stat-box" style="margin-top: 10px;">
+            <span class="stat-label">Multi-Factor Authentication</span>
+            <span class="stat-value">
+                {% if mfa_enabled %}Enabled{% else %}Disabled{% endif %}
+            </span>
+            {% if mfa_enabled %}
+                <a href="{% url 'mfa_disable' %}" class="back-link" style="margin-top: 10px;">Disable MFA</a>
+            {% else %}
+                <a href="{% url 'mfa_setup' %}" class="back-link" style="margin-top: 10px;">Enable MFA</a>
+            {% endif %}
+        </div>
+
         <form action="{% url 'logout' %}" method="post" style="display:inline;">
             {% csrf_token %}
             <button type="submit" class="logout-btn">Logout</button>

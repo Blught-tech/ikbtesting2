@@ -47,3 +47,19 @@ class TaskForm(forms.ModelForm):
         if description and len(description) > 500:
             raise forms.ValidationError("Description cannot exceed 500 characters.")
         return description
+
+
+class MfaVerificationForm(forms.Form):
+    token = forms.CharField(
+        label="Authentication code",
+        max_length=6,
+        min_length=6,
+        required=True,
+        widget=forms.TextInput(attrs={"autocomplete": "one-time-code"}),
+    )
+
+    def clean_token(self):
+        token = self.cleaned_data.get('token', '').strip()
+        if not token.isdigit():
+            raise forms.ValidationError("Enter a valid 6-digit code.")
+        return token
