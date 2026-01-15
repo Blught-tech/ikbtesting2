@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Task
-from .forms import TaskForm  # Imports new form
+from django.conf import settings
+from django.utils import timezone
+import pyotp
+
+from .models import Task, UserMFA
+from .forms import TaskForm, MfaVerificationForm  # Imports new form
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import force_str
@@ -15,11 +19,13 @@ def user_profile(request):
     # 1. Logic for Profile
     task_count = Task.objects.filter(owner=request.user).count()
     completed_tasks = Task.objects.filter(owner=request.user, is_completed=True).count()
+    mfa_profile = UserMFA.objects.filter(user=request.user).first()
 
     context = {
         'user': request.user,
         'task_count': task_count,
         'completed_tasks': completed_tasks,
+        'mfa_enabled': mfa_profile.is_enabled if mfa_profile else False,
     }
     # 2. Return the profile template
     return render(request, 'records/profile.html', context)
@@ -99,3 +105,89 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'records/register.html', {'form': form})
+
+
+@login_required
+def mfa_setup(request):
+    mfa_profile, created = UserMFA.objects.get_or_create(
+        user=request.user,
+        defaults={'secret': pyotp.random_base32()},
+    )
+    if not created and not mfa_profile.secret:
+        mfa_profile.secret = pyotp.random_base32()
+        mfa_profile.save(update_fields=['secret'])
+
+    totp = pyotp.TOTP(mfa_profile.secret)
+    provisioning_uri = totp.provisioning_uri(
+        name=request.user.username,
+        issuer_name="Task Manager",
+    )
+
+    if request.method == 'POST':
+        form = MfaVerificationForm(request.POST)
+        if form.is_valid():
+            token = form.cleaned_data['token']
+            if totp.verify(token, valid_window=1):
+                mfa_profile.is_enabled = True
+                mfa_profile.enabled_at = timezone.now()
+                mfa_profile.save(update_fields=['is_enabled', 'enabled_at'])
+                request.session['mfa_verified'] = True
+                messages.success(request, "Multi-factor authentication enabled.")
+                return redirect('user_profile')
+            form.add_error('token', "Invalid authentication code. Try again.")
+    else:
+        form = MfaVerificationForm()
+
+    return render(
+        request,
+        'records/mfa_setup.html',
+        {
+            'form': form,
+            'mfa_enabled': mfa_profile.is_enabled,
+            'secret': mfa_profile.secret,
+            'provisioning_uri': provisioning_uri,
+        },
+    )
+
+
+@login_required
+def mfa_verify(request):
+    mfa_profile = UserMFA.objects.filter(user=request.user, is_enabled=True).first()
+    if not mfa_profile:
+        request.session['mfa_verified'] = True
+        return redirect(settings.LOGIN_REDIRECT_URL)
+
+    if request.method == 'POST':
+        form = MfaVerificationForm(request.POST)
+        if form.is_valid():
+            token = form.cleaned_data['token']
+            totp = pyotp.TOTP(mfa_profile.secret)
+            if totp.verify(token, valid_window=1):
+                request.session['mfa_verified'] = True
+                redirect_to = request.GET.get('next') or settings.LOGIN_REDIRECT_URL
+                return redirect(redirect_to)
+            form.add_error('token', "Invalid authentication code. Try again.")
+    else:
+        form = MfaVerificationForm()
+
+    return render(request, 'records/mfa_verify.html', {'form': form})
+
+
+@login_required
+def mfa_disable(request):
+    if request.method == 'POST':
+        form = MfaVerificationForm(request.POST)
+        mfa_profile = UserMFA.objects.filter(user=request.user, is_enabled=True).first()
+        if form.is_valid() and mfa_profile:
+            totp = pyotp.TOTP(mfa_profile.secret)
+            if totp.verify(form.cleaned_data['token'], valid_window=1):
+                mfa_profile.is_enabled = False
+                mfa_profile.save(update_fields=['is_enabled'])
+                request.session['mfa_verified'] = True
+                messages.success(request, "Multi-factor authentication disabled.")
+                return redirect('user_profile')
+            form.add_error('token', "Invalid authentication code. Try again.")
+    else:
+        form = MfaVerificationForm()
+
+    return render(request, 'records/mfa_disable.html', {'form': form})

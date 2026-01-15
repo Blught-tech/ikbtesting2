@@ -1,4 +1,4 @@
-from django.contrib.auth.signals import user_login_failed
+from django.contrib.auth.signals import user_login_failed, user_logged_in
 from django.dispatch import receiver
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
@@ -20,3 +20,8 @@ def log_user_login_failed(sender, credentials, request, **kwargs):
             action_flag=ADDITION,
             change_message=f"Failed login attempt for username: {username}"
         )
+
+
+@receiver(user_logged_in)
+def reset_mfa_verification(sender, request, user, **kwargs):
+    request.session['mfa_verified'] = False
